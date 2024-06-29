@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:insert="~{/fragments/head.html :: head }"></head>
+
+
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+    <!-- Preloader -->
+    <div class="preloader flex-column justify-content-center align-items-center">
+        <img class="animation__shake" src="/dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
+    </div>
+
+    <!-- Navbar -->
+    <div th:insert="~{/fragments/navbar :: navbar }"></div>
+    <!-- /.navbar -->
+    <div th:insert="~{/fragments/sidebar :: sidebar }"></div>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid"><!-- /.row -->
+                <div class="row">
+                    <!-- left column -->
+                    <div class="col-md-12">
+                        <!-- jquery validation -->
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">Create Room</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <!-- form start -->
+                            <form id="quickForm" th:action="@{/admin/createRoom}" method="post" enctype="multipart/form-data">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="type">Type:</label>
+                                        <input type="text" name="roomType" class="form-control" id="type" placeholder="Enter Type"
+                                               th:value="${error != null ? error.getBindingResult().getTarget().getRoomType() : ''}">
+                                        <span style="color: red" th:if="${error != null && error.hasFieldErrors('roomType')}"
+                                              th:text="${error.getFieldError('roomType').getDefaultMessage()}"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="price">Price($)</label>
+                                        <input type="text" name="roomPrice" class="form-control" id="price" placeholder="Price"
+                                               th:value="${error != null ? error.getBindingResult().getTarget().getRoomPrice() : ''}">
+                                        <span style="color: red" th:if="${error != null && error.hasFieldErrors('roomPrice')}"
+                                              th:text="${error.getFieldError('roomPrice').getDefaultMessage()}"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="description">Description</label>
+                                        <textarea name="description" th:text="${room.description}" class="form-control" id="description" placeholder="Enter description">
+                                        </textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="image">Image</label><br><br>
+                                        <img  height="300px"  alt="" id="image"><br/> <br/>
+                                        <input type="file" onchange="chooseFile(this)" name="file" class="form-control" id="imageFile" placeholder="Enter image"/>
+                                        <script>
+                                            function chooseFile(fileInput){
+                                                var reader = new FileReader();
+
+                                                reader.onload = function (e){
+                                                    $('#image').attr('src', e.target.result);
+                                                }
+                                                reader.readAsDataURL(fileInput.files[0]);
+                                            }
+                                        </script>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                                </form>
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                    <!--/.col (left) -->
+                    <!-- right column -->
+                    <div class="col-md-6">
+
+                    </div>
+                    <!--/.col (right) -->
+                </div>
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+
+    </div>
+    <!-- /.content-wrapper -->
+    <footer class="main-footer">
+        <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
+        All rights reserved.
+        <div class="float-right d-none d-sm-inline-block">
+            <b>Version</b> 3.2.0
+        </div>
+    </footer>
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- /.control-sidebar -->
+</div>
+<!-- ./wrapper -->
+
+<div th:insert="~{/fragments/script.html :: script }"></div>
+
+<!-- AdminLTE for demo purposes -->
+<!-- <script src="dist/js/demo.js"></script> -->
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<!-- <script src="dist/js/pages/dashboard.js"></script> -->
+</body>
+
+</html>

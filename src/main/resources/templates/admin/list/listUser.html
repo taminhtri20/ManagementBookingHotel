@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{/fragments/head.html :: head }">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>User Table</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            color: #566787;
+            background: #f5f5f5;
+            font-family: 'Roboto', sans-serif;
+        }
+        .table-responsive {
+            margin: 30px 0;
+        }
+        .table-wrapper {
+            min-width: 1000px;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 1px 1px rgba(0,0,0,.05);
+        }
+        .table-title {
+            padding-bottom: 10px;
+            margin: 0 0 10px;
+            min-width: 100%;
+        }
+        .table-title h2 {
+            margin: 8px 0 0;
+            font-size: 22px;
+        }
+        .search-box {
+            position: relative;
+            float: right;
+        }
+        .search-box input {
+            height: 34px;
+            border-radius: 20px;
+            padding-left: 35px;
+            border-color: #ddd;
+            box-shadow: none;
+        }
+        .search-box input:focus {
+            border-color: #3FBAE4;
+        }
+        .search-box i {
+            color: #a0a5b1;
+            position: absolute;
+            font-size: 19px;
+            top: 8px;
+            left: 10px;
+        }
+        table.table tr th, table.table tr td {
+            border-color: #e9e9e9;
+        }
+        table.table-striped tbody tr:nth-of-type(odd) {
+            background-color: #fcfcfc;
+        }
+        table.table-striped.table-hover tbody tr:hover {
+            background: #f5f5f5;
+        }
+        table.table th i {
+            font-size: 13px;
+            margin: 0 5px;
+            cursor: pointer;
+        }
+        table.table td:last-child {
+            width: 130px;
+        }
+        table.table td a {
+            color: #a0a5b1;
+            display: inline-block;
+            margin: 0 5px;
+        }
+        table.table td a.view {
+            color: #03A9F4;
+        }
+        table.table td a.edit {
+            color: #FFC107;
+        }
+        table.table td a.delete {
+            color: #E34724;
+        }
+        table.table td i {
+            font-size: 19px;
+        }
+        .pagination {
+            float: right;
+            margin: 0 0 5px;
+        }
+        .pagination li a {
+            border: none;
+            font-size: 95%;
+            width: 30px;
+            height: 30px;
+            color: #999;
+            margin: 0 2px;
+            line-height: 30px;
+            border-radius: 30px !important;
+            text-align: center;
+            padding: 0;
+        }
+        .pagination li a:hover {
+            color: #666;
+        }
+        .pagination li.active a {
+            background: #03A9F4;
+        }
+        .pagination li.active a:hover {
+            background: #0397d6;
+        }
+        .pagination li.disabled i {
+            color: #ccc;
+        }
+        .pagination li i {
+            font-size: 16px;
+            padding-top: 6px
+        }
+        .hint-text {
+            float: left;
+            margin-top: 6px;
+            font-size: 95%;
+        }
+    </style>
+    <script>
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+    <div class="preloader flex-column justify-content-center align-items-center">
+        <img class="animation__shake" src="/dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
+    </div>
+
+    <!-- Navbar -->
+    <div th:insert="~{/fragments/navbar :: navbar }"></div>
+    <!-- /.navbar -->
+    <div th:insert="~{/fragments/sidebar :: sidebar }"></div>
+    <div class="container-xl" style="min-height: 854px">
+        <div class="table-responsive">
+            <div class="table-wrapper">
+                <div class="">
+                    <div ><h2>User <b>Details</b></h2></div>
+                    <div>
+                        <div class="search-box card-tools">
+                            <form th:action="@{/admin/showAllUser}">
+                                <input type="hidden" name="page" th:value="${listUser.number}">
+                                <input type="hidden" name="sortField" th:value="${sortField}">
+                                <input type="hidden" name="sortDir" th:value="${sortDir}">
+                                <div>
+                                    <label style="margin-left: 9px">Name:</label>
+                                    <input type="text" name="username"  th:value="${username}" placeholder="Search&hellip;">
+                                    <label style="margin-left: 63px">Email:</label>
+                                    <input type="text" name="email"  th:value="${email}" placeholder="Search&hellip;">
+                                </div>
+                                <div>
+                                    <label>Gender:</label>
+                                    <input type="text" name="gender"  th:value="${gender}" placeholder="Search&hellip;">
+                                    <label>Number Phone:</label>
+                                    <input type="text" name="numberPhone"  th:value="${numberPhone}" placeholder="Search&hellip;">
+                                </div>
+                                <div style="float: right">
+                                    <button style="text-align: center" type="submit" class="btn btn-primary" value="search" data-bs-toggle="modal" >
+                                        Search
+                                    </button>
+                                    <button style="text-align: center" type="button" class="btn btn-primary" onclick="window.location.href = '/admin/showAllUser'" data-bs-toggle="modal" >
+                                        Clear
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-striped table-hover table-bordered">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>
+                            <a th:href="@{'showAllUser'(page=${listUser.number},username=${username},email=${email},gender=${gender},numberPhone=${numberPhone}, sortField=username, sortDir=${reverseSortDir})}">
+                                Name <i class="fa fa-sort"></i>
+                            </a>
+                        </th>
+                        <th>
+                            <a th:href="@{'showAllUser'(page=${listUser.number},username=${username},email=${email},gender=${gender},numberPhone=${numberPhone}, sortField=email, sortDir=${reverseSortDir})}">
+                                Email <i class="fa fa-sort"></i>
+                            </a>
+                        </th>
+                        <th>
+                            <a th:href="@{'showAllUser'(page=${listUser.number},username=${username},email=${email},gender=${gender},numberPhone=${numberPhone}, sortField=gender, sortDir=${reverseSortDir})}">
+                                Gender <i class="fa fa-sort"></i>
+                            </a>
+                        </th>
+                        <th>
+                            <a th:href="@{'showAllUser'(page=${listUser.number},username=${username},email=${email},gender=${gender},numberPhone=${numberPhone}, sortField=numberPhone, sortDir=${reverseSortDir})}">
+                                NumberPhone <i class="fa fa-sort"></i>
+                            </a>
+                        </th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="row, rowStatus : ${listUser}">
+                        <td th:text="${rowStatus.count}"></td>
+                        <td>
+                            <a th:href="@{/admin/viewUser/{id}(id=${row.id})}" th:text="${row.username}"></a>
+                        </td>
+                        <td th:text="${row.email}"></td>
+                        <td th:text="${row.gender}"></td>
+                        <td th:text="${row.numberPhone}"></td>
+                        <td style="display: block ruby">
+                            <form th:action="@{/admin/updateUser/{id}(id=${row.id})}">
+                                <button style="text-align: center" type="submit" class="btn btn-primary" data-bs-toggle="modal">
+                                    Edit
+                                </button>
+                            </form>
+
+                            <button style="text-align: center" type="button" class="btn btn-primary" data-bs-toggle="modal" th:attr="data-bs-target=${'#d' + row.getId()}">
+                                Delete
+                            </button>
+
+                            <!-- Modal -->
+                            <div class="modal fade" th:id="${'d' + row.getId()}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Cancel</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <form th:action="@{/admin/deleteUser}"
+                                                  method="POST" novalidate="novalidate">
+                                                <input type="hidden" id="id" name="id" th:value="${row.getId()}" >
+                                                <button type="submit" class="btn btn-primary" id="delete">Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="clearfix">
+                    <!--                <div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>-->
+                    <ul class="pagination justify-content-end">
+                        <li class="page-item">
+                            <a class="page-link"
+                               th:if="${listUser.hasPrevious()}"
+                               th:href="@{'showAllUser'(page=${listUser.number - 1},username=${username},email=${email},gender=${gender},numberPhone=${numberPhone}, sortField=${sortField}, sortDir=${sortDir})}"
+                               style="cursor: pointer">Previous</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link"
+                               th:href="@{'showAllUser'(page=${listUser.number},username=${username},email=${email},gender=${gender},numberPhone=${numberPhone}, sortField=${sortField}, sortDir=${sortDir})}">
+                                <span th:text="${listUser.number + 1}"></span>
+                            </a></li>
+                        <li class="page-item">
+                            <a class="page-link"
+                               th:href="@{'showAllUser'(page=${listUser.totalPages - 1},username=${username},email=${email},gender=${gender},numberPhone=${numberPhone}, sortField=${sortField}, sortDir=${sortDir})}"
+                            >
+                                <span th:text="${listUser.totalPages}"></span>
+                            </a></li>
+                        <li class="page-item">
+                            <a  class="page-link" th:if="${listUser.hasNext()}"
+                                th:href="@{'showAllUser'(page=${listUser.number + 1},username=${username},email=${email},gender=${gender},numberPhone=${numberPhone}, sortField=${sortField}, sortDir=${sortDir})}"
+                                style="cursor: pointer">Next</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="main-footer">
+        <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
+        All rights reserved.
+        <div class="float-right d-none d-sm-inline-block">
+            <b>Version</b> 3.2.0
+        </div>
+    </footer>
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- /.control-sidebar -->
+</div>
+
+<div th:insert="~{/fragments/script.html :: script }"></div>
+<script th:inline="javascript">
+    var msg = [[${ msg }]];
+    if (msg != null) {
+        var status = [[${ status }]];
+        switch (status) {
+            case 'error':
+                toastr.error(msg);
+                break;
+            default:
+                toastr.success(msg);
+                break;
+        }
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+</body>
+</html>
